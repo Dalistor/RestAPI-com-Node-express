@@ -16,13 +16,26 @@ function _search(id) {
 function _delete(id) {
     const index = cripto.findIndex(cripto => cripto.id == id)
 
-    cripto.splice(index, 1)
     if (index != -1) {
+        cripto.splice(index, 1)
+
         return true
     } else {
         return false
     }
 }
+
+function _update(id, newValue) {
+    const index = cripto.findIndex(cripto => cripto.id == id)
+
+    if (index != -1) {
+        cripto[index] = newValue
+
+        return true
+    } else {
+        return false
+    }
+} 
 
     //indicar para o expresse ler body com JSON
     app.use(express.json())
@@ -41,7 +54,7 @@ function _delete(id) {
         res.status(200).send(cripto)
     })
 
-    //postar
+    //pesquisar
     app.get('/criptomoedas/:id', (req, res) => {
         res.json(_search(req.params.id))
     })
@@ -60,6 +73,17 @@ function _delete(id) {
             res.status(200).send('Cripto deletado com sucesso')
         } else {
             res.status(404).send('Cripto não achada')
+        }
+    })
+
+    //Atualizar
+    app.put('/criptomoedas/:id', (req, res) => {
+        const has_updated = _update(req.params.id, req.body)
+
+        if (has_updated) {
+            res.status(200).send('Atualização de cripto concluída!')
+        } else {
+            res.status(404).send('Cripto não achado')
         }
     })
 
