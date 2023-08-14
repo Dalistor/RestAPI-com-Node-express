@@ -1,90 +1,28 @@
-import express from 'express'
+import express, { response } from 'express'
+import CoinController from './app/controllers/coinController.js'
 
 const app = express()
 
-//mock (testes)
-const cripto = [
-    { id: 1, valor: 22230, empresa: 'Binomo' },
-    { id: 2, valor: 22233, empresa: 'Binomo' },
-    { id: 3, valor: 22235, empresa: 'Binomo' }
-]
+//indicar para o expresse ler body com JSON
+app.use(express.json())
 
-function _search(id) {
-    return cripto.filter(cripto => cripto.id == id)
-}
+//--------------------criptomoedas--------------------------//
 
-function _delete(id) {
-    const index = cripto.findIndex(cripto => cripto.id == id)
+//ler
+app.get('/criptomoedas', CoinController.index)
 
-    if (index != -1) {
-        cripto.splice(index, 1)
+//pesquisar
+app.get('/criptomoedas/:id', CoinController.show)
 
-        return true
-    } else {
-        return false
-    }
-}
+//postar
+app.post('/criptomoedas', CoinController.store)
 
-function _update(id, newValue) {
-    const index = cripto.findIndex(cripto => cripto.id == id)
+//deletar
+app.delete('/criptomoedas/:id', CoinController.delete)
 
-    if (index != -1) {
-        cripto[index] = newValue
+//atualizar
+app.put('/criptomoedas/:id', CoinController.update)
 
-        return true
-    } else {
-        return false
-    }
-} 
+//--------------------criptomoedas--------------------------//
 
-    //indicar para o expresse ler body com JSON
-    app.use(express.json())
-
-    //criar rota padrão (mandar informação)
-    app.get('/', (req, res) => {
-        res.send('Bem vindo a minha API, segue abaixo a lista de recursos: \n'
-            + 'criptomoedas'
-        )
-    })
-
-    //criptomoedas
-
-    //ler
-    app.get('/criptomoedas', (req, res) => {
-        res.status(200).send(cripto)
-    })
-
-    //pesquisar
-    app.get('/criptomoedas/:id', (req, res) => {
-        res.json(_search(req.params.id))
-    })
-
-    //postar
-    app.post('/criptomoedas', (req, res) => {
-        cripto.push(req.body)
-        res.status(200).send('Valor da moeda atualizado')
-    })
-
-    //deletar
-    app.delete('/criptomoedas/:id', (req, res) => {
-        const has_deleted = _delete(req.params.id)
-
-        if (has_deleted) {
-            res.status(200).send('Cripto deletado com sucesso')
-        } else {
-            res.status(404).send('Cripto não achada')
-        }
-    })
-
-    //Atualizar
-    app.put('/criptomoedas/:id', (req, res) => {
-        const has_updated = _update(req.params.id, req.body)
-
-        if (has_updated) {
-            res.status(200).send('Atualização de cripto concluída!')
-        } else {
-            res.status(404).send('Cripto não achado')
-        }
-    })
-
-    export default app
+export default app
