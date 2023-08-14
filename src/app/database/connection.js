@@ -16,4 +16,18 @@ connection.connect((error) => {
     }
 })
 
+export const callData = (sql, values=null) => {
+    return new Promise((resolve, reject) => {
+        connection.query(sql, values, (error, response) => {
+            if (error) {
+                return reject('Erro ao se comunicar com o banco de dados')
+            } else {
+                const result = JSON.parse(JSON.stringify(response))
+
+                return resolve(result)
+            }
+        })
+    })
+}
+
 export default connection

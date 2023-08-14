@@ -1,18 +1,4 @@
-import connection from "../database/connection.js"
-
-function callData(sql, values=null) {
-    return new Promise((resolve, reject) => {
-        connection.query(sql, values, (error, response) => {
-            if (error) {
-                return reject('Erro ao se comunicar com o banco de dados')
-            } else {
-                const result = JSON.parse(JSON.stringify(response))
-
-                return resolve(result)
-            }
-        })
-    })
-}
+import { callData } from "../database/connection.js"
 
 class CoinRepository {
     create(req) {
